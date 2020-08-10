@@ -226,9 +226,7 @@ module Primitives = struct
         let select_options =
           List.mapi names ~f:(fun idx text ->
             let selected_attr =
-              if selected_idx = idx
-              then [ Attr.create "selected" "selected" ]
-              else []
+              if selected_idx = idx then [ Attr.create "selected" "selected" ] else []
             in
             let option_attr = selected_attr @ [ Attr.value (Int.to_string idx) ] in
             Node.option option_attr [ Node.text text ])
