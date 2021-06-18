@@ -1,5 +1,5 @@
 open Import
-open Core_kernel
+open Core
 open Vdom
 
 (* We hit the default height limit of 128 fairly quickly. *)
@@ -84,7 +84,7 @@ let render t ~on_input ~inject =
     let () = Incr.stabilize () in
     inject (on_input (Incr.Observer.value_exn observer))
   in
-  Incr.map (t.render inject) ~f:(fun nodes -> Node.div [] nodes)
+  Incr.map (t.render inject) ~f:(fun nodes -> Node.div nodes)
 ;;
 
 let current_value t =
@@ -124,7 +124,9 @@ let both a b =
   Fields.create ~value ~render
 ;;
 
-let wrap_in_div ?(attrs = []) t = map_nodes t ~f:(fun nodes -> [ Node.div attrs nodes ])
+let wrap_in_div ?(attrs = []) t =
+  map_nodes t ~f:(fun nodes -> [ Node.div ~attr:(Attr.many_without_merge attrs) nodes ])
+;;
 
 module Primitives = struct
   let create ~init ~render =
@@ -177,8 +179,14 @@ module Primitives = struct
       let on_input = Attr.on_input (fun _ev text -> inject text) in
       let attrs = Attr.id id :: on_input :: attrs in
       [ (match which_one with
-          | `Text -> Node.input ~key (Attr.type_ "text" :: Attr.value value :: attrs) []
-          | `Text_area -> Node.textarea ~key attrs [ Node.text value ])
+          | `Text ->
+            Node.input
+              ~key
+              ~attr:
+                (Attr.many_without_merge (Attr.type_ "text" :: Attr.value value :: attrs))
+              []
+          | `Text_area ->
+            Node.textarea ~key ~attr:(Attr.many_without_merge attrs) [ Node.text value ])
       ])
   ;;
 
@@ -205,14 +213,17 @@ module Primitives = struct
           Event.Many [ inject Button_state.Pressed; inject Button_state.Not_pressed ])
       in
       let attrs = Attr.id id :: Attr.type_ "button" :: on_click :: attrs in
-      Incr.return [ Node.button ~key attrs [ Node.text text ] ])
+      Incr.return
+        [ Node.button ~key ~attr:(Attr.many_without_merge attrs) [ Node.text text ] ])
   ;;
 
   let disabled_button ~text ?(attrs = default_button_attrs) ?id () =
     let key = next_key () in
     let id = Option.value id ~default:key in
     let attrs = [ Attr.id id; Attr.type_ "button"; Attr.disabled ] @ attrs in
-    let nodes = [ Node.button ~key attrs [ Node.text text ] ] in
+    let nodes =
+      [ Node.button ~key ~attr:(Attr.many_without_merge attrs) [ Node.text text ] ]
+    in
     of_nodes nodes
   ;;
 
@@ -229,11 +240,11 @@ module Primitives = struct
               if selected_idx = idx then [ Attr.create "selected" "selected" ] else []
             in
             let option_attr = selected_attr @ [ Attr.value (Int.to_string idx) ] in
-            Node.option option_attr [ Node.text text ])
+            Node.option ~attr:(Attr.many_without_merge option_attr) [ Node.text text ])
         in
         let on_input = Attr.on_input (fun _ev text -> inject (Int.of_string text)) in
         let attrs = Attr.id id :: on_input :: attrs in
-        [ Node.select ~key attrs select_options ])
+        [ Node.select ~key ~attr:(Attr.many_without_merge attrs) select_options ])
     in
     map t ~f:(fun selected_index -> List.nth_exn meanings selected_index)
   ;;
@@ -276,11 +287,11 @@ module Primitives = struct
       let attrs =
         Attr.type_ "checkbox" :: Attr.id id :: Attr.on_click on_click :: attrs
       in
-      [ Node.input ~key attrs [] ])
+      [ Node.input ~key ~attr:(Attr.many_without_merge attrs) [] ])
   ;;
 
   let message msg = of_nodes [ Node.text msg ]
-  let line_break = of_nodes [ Node.div [] [] ]
+  let line_break = of_nodes [ Node.div [] ]
   let nodes = of_nodes
 end
 
