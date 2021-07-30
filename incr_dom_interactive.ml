@@ -36,7 +36,7 @@ let () =
 
 type 'a t =
   { value : 'a Incr.t
-  ; render : (unit -> Event.t) -> Node.t list Incr.t
+  ; render : (unit -> unit Effect.t) -> Node.t list Incr.t
   }
 [@@deriving fields]
 
@@ -190,12 +190,12 @@ module Primitives = struct
       ])
   ;;
 
-  let text ?init ?(attrs = default_text_attrs) =
-    text_or_text_area ~which_one:`Text ?init ~attrs
+  let text ?init ?(attrs = default_text_attrs) ?id () =
+    text_or_text_area ~which_one:`Text ?init ~attrs ?id ()
   ;;
 
-  let text_area ?init ?(attrs = default_text_area_attrs) =
-    text_or_text_area ~which_one:`Text_area ?init ~attrs
+  let text_area ?init ?(attrs = default_text_area_attrs) ?id () =
+    text_or_text_area ~which_one:`Text_area ?init ~attrs ?id ()
   ;;
 
   module Button_state = struct
@@ -210,7 +210,7 @@ module Primitives = struct
     create ~init ~render:(fun ~inject ~value:(_ : Button_state.t Incr.t) ->
       let on_click =
         Attr.on_click (fun _ ->
-          Event.Many [ inject Button_state.Pressed; inject Button_state.Not_pressed ])
+          Effect.Many [ inject Button_state.Pressed; inject Button_state.Not_pressed ])
       in
       let attrs = Attr.id id :: Attr.type_ "button" :: on_click :: attrs in
       Incr.return

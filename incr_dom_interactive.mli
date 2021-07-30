@@ -182,7 +182,7 @@ module Primitives : sig
   *)
   val create
     :  init:'a
-    -> render:(inject:('a -> Event.t) -> value:'a Incr.t -> Node.t list Incr.t)
+    -> render:(inject:('a -> unit Effect.t) -> value:'a Incr.t -> Node.t list Incr.t)
     -> 'a t
 
   val default_text_attrs : Attr.t list
@@ -204,7 +204,7 @@ end
 val render
   :  'a t
   -> on_input:('a -> 'action)
-  -> inject:('action -> Event.t)
+  -> inject:('action -> unit Effect.t)
   -> Node.t Incr.t
 
 (** [map_nodes] can be used to change the presentation of the [Interactive.t].
