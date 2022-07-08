@@ -184,7 +184,7 @@ module Primitives = struct
               ~key
               ~attr:
                 (Attr.many_without_merge (Attr.type_ "text" :: Attr.value value :: attrs))
-              []
+              ()
           | `Text_area ->
             Node.textarea ~key ~attr:(Attr.many_without_merge attrs) [ Node.text value ])
       ])
@@ -287,7 +287,7 @@ module Primitives = struct
       let attrs =
         Attr.type_ "checkbox" :: Attr.id id :: Attr.on_click on_click :: attrs
       in
-      [ Node.input ~key ~attr:(Attr.many_without_merge attrs) [] ])
+      [ Node.input ~key ~attr:(Attr.many_without_merge attrs) () ])
   ;;
 
   let message msg = of_nodes [ Node.text msg ]
