@@ -125,7 +125,8 @@ let both a b =
 ;;
 
 let wrap_in_div ?(attrs = []) t =
-  map_nodes t ~f:(fun nodes -> [ Node.div ~attr:(Attr.many_without_merge attrs) nodes ])
+  map_nodes t ~f:(fun nodes ->
+    [ Node.div ~attrs:[ Attr.many_without_merge attrs ] nodes ])
 ;;
 
 module Primitives = struct
@@ -182,11 +183,12 @@ module Primitives = struct
           | `Text ->
             Node.input
               ~key
-              ~attr:
-                (Attr.many_without_merge (Attr.type_ "text" :: Attr.value value :: attrs))
+              ~attrs:
+                [ Attr.many_without_merge (Attr.type_ "text" :: Attr.value value :: attrs)
+                ]
               ()
           | `Text_area ->
-            Node.textarea ~key ~attr:(Attr.many_without_merge attrs) [ Node.text value ])
+            Node.textarea ~key ~attrs:[ Attr.many_without_merge attrs ] [ Node.text value ])
       ])
   ;;
 
@@ -214,7 +216,7 @@ module Primitives = struct
       in
       let attrs = Attr.id id :: Attr.type_ "button" :: on_click :: attrs in
       Incr.return
-        [ Node.button ~key ~attr:(Attr.many_without_merge attrs) [ Node.text text ] ])
+        [ Node.button ~key ~attrs:[ Attr.many_without_merge attrs ] [ Node.text text ] ])
   ;;
 
   let disabled_button ~text ?(attrs = default_button_attrs) ?id () =
@@ -222,7 +224,7 @@ module Primitives = struct
     let id = Option.value id ~default:key in
     let attrs = [ Attr.id id; Attr.type_ "button"; Attr.disabled ] @ attrs in
     let nodes =
-      [ Node.button ~key ~attr:(Attr.many_without_merge attrs) [ Node.text text ] ]
+      [ Node.button ~key ~attrs:[ Attr.many_without_merge attrs ] [ Node.text text ] ]
     in
     of_nodes nodes
   ;;
@@ -240,11 +242,11 @@ module Primitives = struct
               if selected_idx = idx then [ Attr.create "selected" "selected" ] else []
             in
             let option_attr = selected_attr @ [ Attr.value (Int.to_string idx) ] in
-            Node.option ~attr:(Attr.many_without_merge option_attr) [ Node.text text ])
+            Node.option ~attrs:[ Attr.many_without_merge option_attr ] [ Node.text text ])
         in
         let on_input = Attr.on_input (fun _ev text -> inject (Int.of_string text)) in
         let attrs = Attr.id id :: on_input :: attrs in
-        [ Node.select ~key ~attr:(Attr.many_without_merge attrs) select_options ])
+        [ Node.select ~key ~attrs:[ Attr.many_without_merge attrs ] select_options ])
     in
     map t ~f:(fun selected_index -> List.nth_exn meanings selected_index)
   ;;
@@ -276,8 +278,8 @@ module Primitives = struct
             let () =
               Async_js.log_s
                 [%message
-                  "Couldn't determine the state of the checkbox. The form might not \
-                   work properly."
+                  "Couldn't determine the state of the checkbox. The form might not work \
+                   properly."
                     (id : string)]
             in
             value
@@ -287,7 +289,7 @@ module Primitives = struct
       let attrs =
         Attr.type_ "checkbox" :: Attr.id id :: Attr.on_click on_click :: attrs
       in
-      [ Node.input ~key ~attr:(Attr.many_without_merge attrs) () ])
+      [ Node.input ~key ~attrs:[ Attr.many_without_merge attrs ] () ])
   ;;
 
   let message msg = of_nodes [ Node.text msg ]
