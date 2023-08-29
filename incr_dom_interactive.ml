@@ -38,7 +38,7 @@ type 'a t =
   { value : 'a Incr.t
   ; render : (unit -> unit Effect.t) -> Node.t list Incr.t
   }
-[@@deriving fields]
+[@@deriving fields ~iterators:create]
 
 let make_counter () =
   let counter = ref 0 in
