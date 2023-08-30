@@ -180,15 +180,15 @@ module Primitives = struct
       let on_input = Attr.on_input (fun _ev text -> inject text) in
       let attrs = Attr.id id :: on_input :: attrs in
       [ (match which_one with
-          | `Text ->
-            Node.input
-              ~key
-              ~attrs:
-                [ Attr.many_without_merge (Attr.type_ "text" :: Attr.value value :: attrs)
-                ]
-              ()
-          | `Text_area ->
-            Node.textarea ~key ~attrs:[ Attr.many_without_merge attrs ] [ Node.text value ])
+         | `Text ->
+           Node.input
+             ~key
+             ~attrs:
+               [ Attr.many_without_merge (Attr.type_ "text" :: Attr.value value :: attrs)
+               ]
+             ()
+         | `Text_area ->
+           Node.textarea ~key ~attrs:[ Attr.many_without_merge attrs ] [ Node.text value ])
       ])
   ;;
 
@@ -299,13 +299,13 @@ end
 
 module T = struct
   include Monad.Make (struct
-      type nonrec 'a t = 'a t
+    type nonrec 'a t = 'a t
 
-      let return = return
-      let map = map
-      let map = `Custom map
-      let bind = bind
-    end)
+    let return = return
+    let map = map
+    let map = `Custom map
+    let bind = bind
+  end)
 end
 
 let all = T.all
