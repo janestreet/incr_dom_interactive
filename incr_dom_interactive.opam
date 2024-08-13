@@ -13,6 +13,7 @@ depends: [
   "ocaml" {>= "5.1.0"}
   "async_js"
   "async_kernel"
+  "core"
   "incr_dom"
   "incr_map"
   "incr_select"

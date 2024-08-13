@@ -299,13 +299,13 @@ end
 
 module T = struct
   include Monad.Make (struct
-    type nonrec 'a t = 'a t
+      type nonrec 'a t = 'a t
 
-    let return = return
-    let map = map
-    let map = `Custom map
-    let bind = bind
-  end)
+      let return = return
+      let map = map
+      let map = `Custom map
+      let bind = bind
+    end)
 end
 
 let all = T.all
