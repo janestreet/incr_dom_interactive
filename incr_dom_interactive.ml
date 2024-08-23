@@ -176,7 +176,7 @@ module Primitives = struct
     let init = Option.value init ~default:"" in
     let key, id = shared_setup ~id in
     create ~init ~render:(fun ~inject ~value ->
-      let%map value = value in
+      let%map value in
       let on_input = Attr.on_input (fun _ev text -> inject text) in
       let attrs = Attr.id id :: on_input :: attrs in
       [ (match which_one with
@@ -235,7 +235,7 @@ module Primitives = struct
     let key, id = shared_setup ~id in
     let t =
       create ~init ~render:(fun ~inject ~value:selected_idx ->
-        let%map selected_idx = selected_idx in
+        let%map selected_idx in
         let select_options =
           List.mapi names ~f:(fun idx text ->
             let selected_attr =
@@ -262,7 +262,7 @@ module Primitives = struct
     let open Incr.Let_syntax in
     let key, id = shared_setup ~id in
     create ~init ~render:(fun ~inject ~value ->
-      let%map value = value in
+      let%map value in
       let attrs = (if value then [ Attr.checked ] else []) @ attrs in
       (* jjackson: I couldn't figure out how to obtain the current state of the checkbox
          directly from the event, so we have to find the checkbox in the DOM and look at
