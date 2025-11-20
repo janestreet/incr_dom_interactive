@@ -20,9 +20,9 @@ let () =
    It's more natural to think of the type of [inject] as [('a -> Event.t)] rather than
    [(unit -> Event.t)], since its purpose is to convert a value update into an [Event.t].
 
-   The reason it's not implemented this way is that if a complex ['a Interactive.t]
-   is created by composing simpler [_ Interactive.t]s, then when the value of a simpler
-   part changes, the resulting [Event.t] should reflect the new value of ['a], not the new
+   The reason it's not implemented this way is that if a complex ['a Interactive.t] is
+   created by composing simpler [_ Interactive.t]s, then when the value of a simpler part
+   changes, the resulting [Event.t] should reflect the new value of ['a], not the new
    value of the simpler part.
 
    So, what we actually do is:
