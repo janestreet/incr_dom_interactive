@@ -184,7 +184,8 @@ module Primitives = struct
            Node.input
              ~key
              ~attrs:
-               [ Attr.many_without_merge (Attr.type_ "text" :: Attr.value value :: attrs)
+               [ Attr.many_without_merge
+                   (Attr.type_ "text" :: Attr.value_attr value :: attrs)
                ]
              ()
          | `Text_area ->
@@ -241,7 +242,7 @@ module Primitives = struct
             let selected_attr =
               if selected_idx = idx then [ Attr.create "selected" "selected" ] else []
             in
-            let option_attr = selected_attr @ [ Attr.value (Int.to_string idx) ] in
+            let option_attr = selected_attr @ [ Attr.value_attr (Int.to_string idx) ] in
             Node.option ~attrs:[ Attr.many_without_merge option_attr ] [ Node.text text ])
         in
         let on_input = Attr.on_input (fun _ev text -> inject (Int.of_string text)) in
